@@ -24,14 +24,21 @@ class PermissionChecker():
         self.doacl = doacl
         self.printmode = printmode
         self._ImportUserData()
+        if self.doacl:
+            try:
+                import posix1e
+                self.posix1e = posix1e
+            except ImportError:
+                self.error("checkperms needs python ACL support 'posix1e'")
+                self.doacl = False
 
     def error(self, msg):
-        print('Error : ' + str(msg))
+        print('\033[91mError : ' + str(msg) + '\033[0m', file=sys.stderr)
         sys.exit(1)
 
     def log(self, msg):
         if self.verbose:
-            print('Log : ' + str(msg))
+            print('\033[94mLog : ' + str(msg) + '\033[0m')
 
     def info(self, msg, mode, path):
         print(str(msg) + " " + str(mode) + " " + str(path))
@@ -93,16 +100,16 @@ class PermissionChecker():
         return r
 
     def _aclCheck(self, path, mode):
-        if posix1e.has_extended(path):
-            acl = posix1e.ACL(file=path)
+        if self.posix1e.has_extended(path):
+            acl = self.posix1e.ACL(file=path)
             for entry in acl:
-                if entry.tag_type == posix1e.ACL_USER and entry.qualifier == self.userid:
+                if entry.tag_type == self.posix1e.ACL_USER and entry.qualifier == self.userid:
                     if self._acltoperms(entry) & mode == mode:
                         return True
-                if entry.tag_type == posix1e.ACL_GROUP and entry.qualifier in self.groups:
+                if entry.tag_type == self.posix1e.ACL_GROUP and entry.qualifier in self.groups:
                     if self._acltoperms(entry) & mode == mode:
                         return True
-                if entry.tag_type == posix1e.ACL_OTHER:
+                if entry.tag_type == self.posix1e.ACL_OTHER:
                     if self._acltoperms(entry) & mode == mode:
                         return True
         return False
@@ -201,12 +208,7 @@ def main(argv):
         if opt == '-n':
             printmode = 'n'
         if opt == '-e':
-            try:
-                import posix1e
-                doacl = True
-            except ImportError:
-                print("checkperms needs python ACL support 'posix1e'")
-                sys.exit(100)
+            doacl = True
 
     if checkuser is None:
         print("Please select a user to check.")
