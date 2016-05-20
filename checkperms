@@ -162,6 +162,7 @@ class PermissionChecker():
 def usage():
     print(
         "Usage : checkperms -u USER -p PATH -m MODE [-v -d DEPTH -l -y|n -e]")
+    print("-h : print this help")
     print("-v : verbose")
     print("-u : check in the name of USER")
     print("-p : path to check with MODE as USER")
@@ -175,7 +176,7 @@ def usage():
 
 def main(argv):
     try:
-        opts, args = getopt.getopt(argv, "vu:p:m:d:lyne")
+        opts, args = getopt.getopt(argv, "vu:p:m:d:lynahe")
     except getopt.GetoptError:
         usage()
         print("Error parsing Arguments...")
@@ -209,6 +210,9 @@ def main(argv):
             printmode = 'n'
         if opt == '-e':
             doacl = True
+        if opt == '-h':
+            usage()
+            sys.exit(0)
 
     if checkuser is None:
         print("Please select a user to check.")
