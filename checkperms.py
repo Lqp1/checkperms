@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+from __future__ import print_function
 import sys
-import getopt
 import os
 import stat
 import grp
@@ -11,7 +11,7 @@ import pwd
 __author__ = "Thomas Langé"
 __copyright__ = "(c) 2016 T. Lange"
 __license__ = "MIT"
-__version__ = "0.01"
+__version__ = "0.1"
 __status__ = "prototype"
 
 
@@ -158,85 +158,3 @@ class PermissionChecker():
         else:
             self.error("This option needs a directory, not a file")
 
-
-def usage():
-    print(
-        "Usage : checkperms -u USER -p PATH -m MODE [-v -d DEPTH -l -y|n -e]")
-    print("-h : print this help")
-    print("-v : verbose")
-    print("-u : check in the name of USER")
-    print("-p : path to check with MODE as USER")
-    print("-m : octal representation of rights to check")
-    print("-l : check access to PATH and then MODE rights on each file/subdir")
-    print("-d : max depth to recurse when listing files in PATH")
-    print("-y -n : print only granted/blocked access")
-    print("-e : enable ACL support")
-    print("\n")
-
-
-def main(argv):
-    try:
-        opts, args = getopt.getopt(argv, "vu:p:m:d:lynahe")
-    except getopt.GetoptError:
-        usage()
-        print("Error parsing Arguments...")
-        sys.exit(100)
-
-    verbose = False
-    checkuser = None
-    path = None
-    mode = None
-    checklist = False
-    maxdepth = -1
-    doacl = False
-    printmode = 'a'
-
-    for opt, arg in opts:
-        if opt == '-v':
-            verbose = True
-        if opt == '-u':
-            checkuser = arg
-        if opt == '-p':
-            path = arg
-        if opt == '-m':
-            mode = int(arg)
-        if opt == '-l':
-            checklist = True
-        if opt == '-d':
-            maxdepth = int(arg)
-        if opt == '-y':
-            printmode = 'y'
-        if opt == '-n':
-            printmode = 'n'
-        if opt == '-e':
-            doacl = True
-        if opt == '-h':
-            usage()
-            sys.exit(0)
-
-    if checkuser is None:
-        print("Please select a user to check.")
-        sys.exit(100)
-
-    if mode is None:
-        print("Choose check mode !")
-        sys.exit(100)
-
-    if path is None:
-        print("Please select a path to check.")
-        sys.exit(100)
-    if not os.path.exists(path):
-        print(
-            "This path does not exist or current user may not have access to it.")
-        sys.exit(2)
-
-    p = PermissionChecker(
-        checkuser, path, printmode, doacl=doacl, verbose=verbose)
-    if(checklist):
-        p.ListCheck(mode, maxdepth)
-    else:
-        p.SimpleCheck(mode)
-    sys.exit(0)
-
-if __name__ == '__main__':
-    main(sys.argv[1:])

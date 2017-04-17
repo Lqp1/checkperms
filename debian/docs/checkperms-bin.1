@@ -1,0 +1,37 @@
+.Dd 17-04-17              \" DATE
+.Dt checkperms-bin 1      \" Program name and manual section number
+.Os Linux
+.Sh NAME                 \" Section Header - required - don't modify
+.Nm checkperms-bin
+.Nd A tool for permission checking
+.Sh SYNOPSIS             \" Section Header - required - don't modify
+.Nm
+.Op Fl hlve              \" [-abcd]
+.Op Fl u Ar user         \" [-a path]
+.Op Fl p Ar path
+.Op Fl m Ar ooo
+.Op Fl d Ar depth
+.Op Fl y|n
+.Sh DESCRIPTION          \" Section Header - required - don't modify
+A list of flags and their descriptions:
+.Bl -tag -width -indent  \" Differs from above in tag removed
+.It Fl h                 \"-a flag as a list item
+Prints help
+.It Fl l
+check access to PATH and then MODE rights on each file/subdir
+.It Fl v
+Verbose mode
+.It Fl e
+Enable ACL attributes checking
+.It Fl u
+Checks access as USER
+.It Fl p
+Checks access to PATH
+.It Fl m
+Octal representation of the rights to check
+.It Fl d
+Max depth for recursive check
+.It Fl y|n
+Print only accepted/refused access
+.El                      \" Ends the list
+.Pp
