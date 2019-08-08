@@ -8,12 +8,6 @@ import stat
 import grp
 import pwd
 
-__author__ = "Thomas Langé"
-__copyright__ = "(c) 2016 T. Lange"
-__license__ = "MIT"
-__version__ = "0.1"
-__status__ = "prototype"
-
 
 class PermissionChecker():
 
