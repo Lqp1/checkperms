@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 
 from __future__ import print_function
 import sys
@@ -114,11 +114,15 @@ class PermissionChecker():
         if not self._CheckNode(path, 4):
             print("Cannot list directory. Abort tree from here : " + path)
             return None
-        for f in os.listdir(path):
-            f = os.path.join(path, f)
-            self._CheckFile(f, mode)
-            if os.path.isdir(f):
-                self._rList(f, mode, depth - 1)
+        try:
+            for f in os.listdir(path):
+                f = os.path.join(path, f)
+                self._CheckFile(f, mode)
+                if os.path.isdir(f):
+                    self._rList(f, mode, depth - 1)
+        except PermissionError:
+            print("Access forbidden to current path. Aborting from here : "
+            + path)
 
     def _rCheck(self, path):
         (head, tail) = os.path.split(path)
